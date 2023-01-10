@@ -1,2 +1,2 @@
-# feast-test-1
+# feast-test-snowflake
 Feature store test
