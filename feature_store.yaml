@@ -7,6 +7,6 @@ offline_store:
     database: FEAST
     account: kma55258
     password: ${FEAST_SNOWFLAKE_PASSWORD}
-    role: PUBLIC
+    role: SYSADMIN
     warehouse: DOMINODATALAB
 entity_key_serialization_version: 2
