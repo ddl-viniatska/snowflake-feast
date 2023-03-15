@@ -1,5 +1,4 @@
 from datetime import timedelta
-#test
 
 import pandas as pd
 import yaml
@@ -18,7 +17,7 @@ from feast.types import Float32, Float64, Int64
 
 # Define an entity for the driver. You can think of an entity as a primary key used to
 # fetch features.
-driver = Entity(name="driver", join_keys=["driver_id"])
+driver = Entity(name="driver", join_keys=["DRIVER_ID"])
 
 # Defines a data source from which feature values can be retrieved. Sources are queried when building training
 # datasets or materializing features into an online store.
@@ -26,15 +25,14 @@ project_name = yaml.safe_load(open("feature_store.yaml"))["project"]
 
 driver_stats_source = SnowflakeSource(
     # The Snowflake table where features can be found
-    database="FEAST",
-    schema="PUBLIC",
+    database=yaml.safe_load(open("feature_store.yaml"))["offline_store"]["database"],
     table="DRIVER_STATS",
     # The event timestamp is used for point-in-time joins and for ensuring only
     # features within the TTL are returned
-    timestamp_field="event_timestamp",
+    timestamp_field="EVENT_TIMESTAMP",
     # The (optional) created timestamp is used to ensure there are no duplicate
     # feature rows in the offline store or when building training datasets
-    created_timestamp_column="created",
+    created_timestamp_column="CREATED",
 )
 
 # Feature views are a grouping based on how features are stored in either the
@@ -58,20 +56,14 @@ driver_stats_fv = FeatureView(
     # for both materialization of features into a store, and are used as references
     # during retrieval for building a training dataset or serving features
     schema=[
-        Field(name="conv_rate", dtype=Float32),
-        Field(name="acc_rate", dtype=Float32),
-        Field(name="avg_daily_trips", dtype=Int64),
+        Field(name="CONV_RATE", dtype=Float32),
+        Field(name="ACC_RATE", dtype=Float32),
+        Field(name="AVG_DAILY_TRIPS", dtype=Int64),
     ],
     source=driver_stats_source,
     # Tags are user defined key/value pairs that are attached to each
     # feature view
-    tags={"team": "driver_performance_test"},
-)
-
-# Defines a way to push data (to be available offline, online or both) into Feast.
-driver_stats_push_source = PushSource(
-    name="driver_stats_push_source",
-    batch_source=driver_stats_source,
+    tags={"team": "driver_performance"},
 )
 
 # Define a request data source which encodes features / information only
@@ -96,8 +88,8 @@ input_request = RequestSource(
 )
 def transformed_conv_rate(inputs: pd.DataFrame) -> pd.DataFrame:
     df = pd.DataFrame()
-    df["conv_rate_plus_val1"] = inputs["conv_rate"] + inputs["val_to_add"]
-    df["conv_rate_plus_val2"] = inputs["conv_rate"] + inputs["val_to_add_2"]
+    df["conv_rate_plus_val1"] = inputs["CONV_RATE"] + inputs["val_to_add"]
+    df["conv_rate_plus_val2"] = inputs["CONV_RATE"] + inputs["val_to_add_2"]
     return df
 
 
@@ -105,8 +97,55 @@ def transformed_conv_rate(inputs: pd.DataFrame) -> pd.DataFrame:
 driver_activity_v1 = FeatureService(
     name="driver_activity_v1",
     features=[
-        driver_stats_fv[["conv_rate"]],  # Sub-selects a feature from a feature view
+        driver_stats_fv[["CONV_RATE"]],  # Sub-selects a feature from a feature view
         transformed_conv_rate,  # Selects all features from the feature view
     ],
 )
-driver_activity_v2 = FeatureService(name="driver_activity_v2", features=[driver_stats_fv, transformed_conv_rate])
+driver_activity_v2 = FeatureService(
+    name="driver_activity_v2", features=[driver_stats_fv, transformed_conv_rate]
+)
+
+# Defines a way to push data (to be available offline, online or both) into Feast.
+driver_stats_push_source = PushSource(
+    name="driver_stats_push_source",
+    batch_source=driver_stats_source,
+)
+
+# Defines a slightly modified version of the feature view from above, where the source
+# has been changed to the push source. This allows fresh features to be directly pushed
+# to the online store for this feature view.
+driver_stats_fresh_fv = FeatureView(
+    name="driver_hourly_stats_fresh",
+    entities=[driver],
+    ttl=timedelta(weeks=52 * 10),  # Set to be very long for example purposes only
+    schema=[
+        Field(name="CONV_RATE", dtype=Float32),
+        Field(name="ACC_RATE", dtype=Float32),
+        Field(name="AVG_DAILY_TRIPS", dtype=Int64),
+    ],
+    online=True,
+    source=driver_stats_push_source,  # Changed from above
+    tags={"team": "driver_performance"},
+)
+
+
+# Define an on demand feature view which can generate new features based on
+# existing feature views and RequestSource features
+@on_demand_feature_view(
+    sources=[driver_stats_fresh_fv, input_request],  # relies on fresh version of FV
+    schema=[
+        Field(name="conv_rate_plus_val1", dtype=Float64),
+        Field(name="conv_rate_plus_val2", dtype=Float64),
+    ],
+)
+def transformed_conv_rate_fresh(inputs: pd.DataFrame) -> pd.DataFrame:
+    df = pd.DataFrame()
+    df["conv_rate_plus_val1"] = inputs["CONV_RATE"] + inputs["val_to_add"]
+    df["conv_rate_plus_val2"] = inputs["CONV_RATE"] + inputs["val_to_add_2"]
+    return df
+
+
+driver_activity_v3 = FeatureService(
+    name="driver_activity_v3",
+    features=[driver_stats_fresh_fv, transformed_conv_rate_fresh],
+)
