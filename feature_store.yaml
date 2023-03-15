@@ -4,11 +4,17 @@ provider: local
 offline_store:
     type: snowflake.offline
     user: ${FEAST_SNOWFLAKE_USER}
-    database: Diabetes
+    database: FEAST
     account: kma55258
     password: ${FEAST_SNOWFLAKE_PASSWORD}
     role: public
     warehouse: DOMINODATALAB
 online_store:
-    type: datastore
+    type: snowflake.online
+    account: kma55258
+    role: public
+    warehouse: DOMINODATALAN
+    database: DIABETES
+    user: ${FEAST_SNOWFLAKE_ONLINE_USER}
+    password: ${FEAST_SNOWFLAKE_ONLINE_PASSWORD}
 entity_key_serialization_version: 2
