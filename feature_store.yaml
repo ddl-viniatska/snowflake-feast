@@ -9,4 +9,12 @@ offline_store:
     password: ${FEAST_SNOWFLAKE_PASSWORD}
     role: SYSADMIN
     warehouse: DOMINODATALAB
+online_store:
+    type: snowflake.online
+    account: kma55258
+    role: SYSADMIN
+    warehouse: DOMINODATALAB
+    database: FEAST
+    user: ${FEAST_SNOWFLAKE_ONLINE_USER}
+    password: ${FEAST_SNOWFLAKE_ONLINE_PASSWORD}
 entity_key_serialization_version: 2
