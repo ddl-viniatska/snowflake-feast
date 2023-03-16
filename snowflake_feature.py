@@ -15,7 +15,6 @@ from feast import (
 from feast.on_demand_feature_view import on_demand_feature_view
 from feast.types import Float32, Float64, Int64
 
-#test
 # Define an entity for the driver. You can think of an entity as a primary key used to
 # fetch features.
 driver = Entity(name="driver", join_keys=["DRIVER_ID"])
@@ -41,8 +40,8 @@ driver_stats_source = SnowflakeSource(
 driver_stats_fv = FeatureView(
     # The unique name of this feature view. Two feature views in a single
     # project cannot have the same name
-    name="driver_hourly_stats",
-    description="test",
+    name="driver_hourly_stats_demo",
+    description="FEATURE TEST DESCRIPTION",
     # The list of entities specifies the keys required for joining or looking
     # up features from this feature view. The reference provided in this field
     # correspond to the name of a defined entity (or entities)
@@ -58,9 +57,9 @@ driver_stats_fv = FeatureView(
     # for both materialization of features into a store, and are used as references
     # during retrieval for building a training dataset or serving features
     schema=[
-        Field(name="CONV_RATE", dtype=Float32,tags={"team": "driver_performance"}),
-        Field(name="ACC_RATE", dtype=Float32),
-        Field(name="AVG_DAILY_TRIPS", dtype=Int64),
+        Field(name="CONV_RATE", dtype=Float32,tags={"team": "prod"}),
+        Field(name="ACC_RATE", dtype=Float32),{"team": "data"},
+        Field(name="AVG_DAILY_TRIPS", dtype=Int64){"team": "eng@"},
     ],
     source=driver_stats_source,
     # Tags are user defined key/value pairs that are attached to each
