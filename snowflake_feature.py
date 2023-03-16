@@ -126,7 +126,6 @@ driver_stats_fresh_fv = FeatureView(
     online=True,
     source=driver_stats_push_source,  # Changed from above
     tags={"team": "driver_performance"},
-    # description={"team": "driver_performance"},
 )
 
 
