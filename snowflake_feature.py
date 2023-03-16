@@ -119,14 +119,14 @@ driver_stats_fresh_fv = FeatureView(
     entities=[driver],
     ttl=timedelta(weeks=52 * 10),  # Set to be very long for example purposes only
     schema=[
-        Field(name="CONV_RATE", dtype=Float32,tag="test"),
+        Field(name="CONV_RATE", dtype=Float32),
         Field(name="ACC_RATE", dtype=Float32),
         Field(name="AVG_DAILY_TRIPS", dtype=Int64),
     ],
     online=True,
     source=driver_stats_push_source,  # Changed from above
     tags={"team": "driver_performance"},
-    description={"team": "driver_performance"},
+    # description={"team": "driver_performance"},
 )
 
 
