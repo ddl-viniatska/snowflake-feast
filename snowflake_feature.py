@@ -59,6 +59,7 @@ driver_stats_fv = FeatureView(
     # during retrieval for building a training dataset or serving features
     schema=[
         Field(name="CONV_RATE", dtype=Float32,tags={"team": "driver_performance"}),
+        Field(name="CONV_RATE1", dtype=Float32,tags={"team": "driver_performance"}),
         Field(name="ACC_RATE", dtype=Float32),
         Field(name="AVG_DAILY_TRIPS", dtype=Int64,tags={"team": "eng"}),
     ],
