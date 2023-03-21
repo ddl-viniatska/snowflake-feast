@@ -41,7 +41,7 @@ driver_stats_source = SnowflakeSource(
 driver_stats_fv = FeatureView(
     # The unique name of this feature view. Two feature views in a single
     # project cannot have the same name
-    name="driver_hourly_stats_MULTIPLE_FEATURES",
+    name="driver_hourly_stats_REDIS",
     description="FEATURE TEST DESCRIPTION",
     # The list of entities specifies the keys required for joining or looking
     # up features from this feature view. The reference provided in this field
