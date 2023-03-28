@@ -41,7 +41,7 @@ driver_stats_source = SnowflakeSource(
 driver_stats_fv = FeatureView(
     # The unique name of this feature view. Two feature views in a single
     # project cannot have the same name
-    name="driver_hourly_stats_new",
+    name="driver_hourly_stats_new_super",
     description="FEATURE TEST DESCRIPTION",
     # The list of entities specifies the keys required for joining or looking
     # up features from this feature view. The reference provided in this field
@@ -59,6 +59,15 @@ driver_stats_fv = FeatureView(
     # during retrieval for building a training dataset or serving features
     schema=[
         Field(name="CONV_RATE", dtype=Float32,tags={"team": "TEST@"}),
+        Field(name="anna", dtype=Float32,tags={"team": "TEST@"}),
+        Field(name="anna*", dtype=Float32,tags={"team": "TEST@"}),
+        Field(name="anna?", dtype=Float32,tags={"team": "TEST@"}),
+        Field(name="anna", dtype=Float32,tags={"team": "TEST@"}),
+        Field(name="anna*", dtype=Float32,tags={"team": "TEST@"}),
+        Field(name="anna?", dtype=Float32,tags={"team": "TEST@"}),
+        Field(name="anna", dtype=Float32,tags={"team": "TEST@"}),
+        Field(name="anna*", dtype=Float32,tags={"team": "TEST@"}),
+        Field(name="anna?", dtype=Float32,tags={"team": "TEST@"}),
         Field(name="CONV_RATE", dtype=Float32,tags={"team": "ANNA@"}),
         Field(name="CONV_RATE", dtype=Float32,tags={"team": "ANNA"}),
         Field(name="CONV_RATE", dtype=Float32,tags={"team": "ANNA@"}),
