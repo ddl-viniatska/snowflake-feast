@@ -13,7 +13,7 @@ online_store:
     type: snowflake.online
     account: kma55258
     role: SYSADMIN
-    warehouse: DOMNODATALAB
+    warehouse: DOMINODATALAB
     database: FEAST
     user: ${FEAST_SNOWFLAKE_ONLINE_USER}
     password: ${FEAST_SNOWFLAKE_ONLINE_PASSWORD}
