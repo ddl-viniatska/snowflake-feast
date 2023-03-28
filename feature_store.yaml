@@ -2,7 +2,7 @@ project: domino_feast
 registry: data/registry.db
 provider: local
 offline_store:
-    type: bigquery
+    type: file
 online_store:
     type: bigtable
     instance: bigtable-test
