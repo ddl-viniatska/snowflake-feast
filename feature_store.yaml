@@ -4,6 +4,6 @@ provider: local
 offline_store:
     type: file
 online_store:
-    type: bigtable
-    instance: bigtable-test
+    type: dynamodb
+    region: u
 entity_key_serialization_version: 2
