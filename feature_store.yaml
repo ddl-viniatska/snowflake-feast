@@ -7,12 +7,12 @@ offline_store:
     database: FEAST
     account: kma55258
     password: ${FEAST_SNOWFLAKE_PASSWORD}
-    role: SYSADMIN
+    role: public
     warehouse: DOMINODATALAB
 online_store:
     type: snowflake.online
     account: kma55258
-    role: SYSADMIN
+    role: public
     warehouse: DOMINODATALAB
     database: FEAST
     user: ${FEAST_SNOWFLAKE_ONLINE_USER}
