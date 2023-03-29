@@ -3,7 +3,7 @@ from datetime import timedelta
 import pandas as pd
 import yaml
 
-#testanna
+
 
 from feast import (
     Entity,
